@@ -1,0 +1,155 @@
+1.
+CREATE DATABASE s290908;
+2.
+CREATE SCHEMA firma;
+3.
+CREATE ROLE ksiegowosc;
+GRANT SELECT ON ALL TABLES IN SCHEMA firma to ksiegowosc;
+4.
+CREATE TABLE pracownicy (id_pracownika int NOT NULL, imie VARCHAR , nazwisko VARCHAR, adres VARCHAR, telefon VARCHAR);
+CREATE TABLE godziny (id_godziny int NOT NULL, data DATE, liczba_godzin INTEGER, id_pracownika int );
+CREATE TABLE pensja_stanowisko (id_pensji int NOT NULL, stanowisko VARCHAR, kwota NUMERIC(10,2));
+CREATE TABLE premia  (id_premii int NOT NULL, rodzaj VARCHAR, kwota NUMERIC(10,2));
+CREATE TABLE wynagrodzenie (id_wynagrodzenia int NOT NULL, data DATE, id_pracownika int NOT NULL, id_godziny int NOT NULL, id_pensji int NOT NULL, id_premii int NOT NULL);
+
+ALTER TABLE pracownicy ADD PRIMARY KEY (id_pracownika); 
+ALTER TABLE godziny ADD PRIMARY KEY (id_godziny); 
+ALTER TABLE pensja_stanowisko ADD PRIMARY KEY (id_pensji); 
+ALTER TABLE premia ADD PRIMARY KEY (id_premii); 
+ALTER TABLE wynagrodzenie ADD PRIMARY KEY (id_wynagrodzenia); 
+
+ALTER TABLE godziny ADD FOREIGN KEY (id_pracownika) REFERENCES pracownicy(id_pracownika); 
+ALTER TABLE wynagrodzenie ADD FOREIGN KEY (id_pracownika) REFERENCES pracownicy(id_pracownika); 
+ALTER TABLE wynagrodzenie ADD FOREIGN KEY (id_godziny) REFERENCES godziny(id_godziny); 
+ALTER TABLE wynagrodzenie ADD FOREIGN KEY (id_premii) REFERENCES premia(id_premii); 
+ALTER TABLE wynagrodzenie ADD FOREIGN KEY (id_pensji) REFERENCES pensja_stanowisko(id_pensji);
+
+COMMENT ON TABLE pracownicy IS 'Lista pracowników';
+COMMENT ON TABLE godziny IS 'Ilość godzin pracy pracownika w miesiącu';
+COMMENT ON TABLE pensja_stanowisko IS 'Wysokość pensji stanowiska';
+COMMENT ON TABLE premia IS 'Wysokość premii w zależności od jej rodzaju';
+COMMENT ON TABLE wynagrodzenie IS 'Wysokość wynagrodzenia za miesiąc';
+5.
+INSERT INTO pracownicy (imie, nazwisko,adres, telefon) VALUES 
+('Jan', 'bbbbbb', 'Kraków', '111111111'),
+('Ania', 'Cep', 'Kraków', '222222222'),
+('Mateusz', 'Fejk', 'Myślenice', '111111111'),
+('Patryk', 'Gruby', 'Poręba', '333333333'),
+('Bogusz', 'ccccc', 'Rabka', '444444444'),
+('Dominik', 'Kiep', 'aaa', '666666666'),
+('Joanna', 'ddddd', 'Kielce', '777777777'),
+('Ola', 'Nowak', 'Krzyś', '888888888'),
+('Piotr', 'eeeeee', 'Mrówka', '999999999'),
+('Ala', 'Matoga', 'Biedra', '000000000');
+
+INSERT INTO godziny (data, liczba_godzin, id_pracownika) VALUES 
+('2020-10-10',122, 1),
+('2020-10-10',165, 2),
+('2020-10-10',153, 3),
+('2020-10-10',164, 4),
+('2020-10-10',121, 5),
+('2020-10-10',165, 6),
+('2020-10-10',123, 7),
+('2020-10-10',112, 8),
+('2020-10-10',111, 9),
+('2020-10-10',170, 10),
+('2020-09-10',140, 10),
+('2020-09-10',170, 9),
+('2020-09-10',162, 8),
+('2020-09-10',164, 7),
+('2020-09-10',142, 6),
+('2020-09-10',151, 5),
+('2020-09-10',131, 4),
+('2020-09-10',168, 3),
+('2020-09-10',195, 2),
+('2020-09-10',136, 1),
+('2020-08-10',122, 1),
+('2020-08-10',111, 2),
+('2020-08-10',133, 3),
+('2020-08-10',144, 4),
+('2020-08-10',155, 5),
+('2020-08-10',166, 6),
+('2020-08-10',177, 7),
+('2020-08-10',188, 8),
+('2020-08-10',199, 9),
+('2020-08-10',100, 10);
+
+INSERT INTO premia (rodzaj, kwota) VALUES 
+('nadgodziny', 100.00),
+('awans', 250.00),
+('Wygląd', 1200.20),
+('Uśmiech', 133.4),
+('Nadgodziny', 92.0),
+('Awans', 199.2),
+('Za to że jest', 650.22),
+('za nic', 1111.11),
+('za życie',500.0);
+
+INSERT INTO pensja_stanowisko (stanowisko, kwota ) VALUES 
+('ksiegowy', 1200),
+('starszy ksiegowy', 1500.30),
+('doradca klienta', 1000),
+('asystent', 1200),
+('Szef', 2100),
+('administrator sieci', 1000),
+('praktykant', 500),
+('sekretarka', 1300.20),
+('psycholog', 900),
+('Specjalista ds. wyglądu', 1200),
+('Specjalista ds. uśmiechu', 1200);
+
+
+INSERT INTO wynagrodzenie (id_pracownika, data, id_godziny, id_pensji, id_premii) VALUES
+(1,'2020-11-10', 1,1,5),
+(3,'2020-11-10', 3,3,5),
+(4,'2020-11-10', 4,2,1),
+(5,'2020-11-10', 5,9,4),
+(6,'2020-11-10', 6,8,4),
+(7,'2020-11-10', 7,5,1),
+(8,'2020-11-10', 8,9,3),
+(9,'2020-11-10', 9,10,1),
+(10,'2020-11-10', 10,3,3),
+(10,'2020-10-10', 11,4,1),
+(9,'2020-10-10', 12,9,1),
+(8,'2020-10-10', 13,1,1),
+(7,'2020-10-10', 14,2,1),
+(6,'2020-10-10', 15,8,1);
+
+ALTER TABLE godziny ADD COLUMN miesiac INT, ADD COLUMN nr_tyg INT;
+UPDATE godziny SET nr_tyg =  EXTRACT(WEEK FROM data);
+UPDATE godziny SET miesiac =  EXTRACT(MONTH FROM data);
+ALTER TABLE wynagrodzenie ALTER COLUMN data TYPE varchar;
+
+INSERT INTO premia (rodzaj, kwota) VALUES ('brak', 0);
+6.
+SELECT id_pracownika, nazwisko FROM pracownicy;
+
+SELECT id_pracownika FROM wynagrodzenie INNER JOIN pensja_stanowisko ON (wynagrodzenie.id_pensji = pensja_stanowisko.id_pensji) WHERE pensja_stanowisko.kwota > 1000;
+
+SELECT DISTINCT wynagrodzenie.id_pracownika FROM wynagrodzenie INNER JOIN pensja_stanowisko ON (wynagrodzenie.id_pensji = pensja_stanowisko.id_pensji) INNER JOIN premia ON (wynagrodzenie.id_premii = premia.id_premii)  WHERE pensja_stanowisko.kwota+premia.kwota > 2000 AND premia.rodzaj = 'brak';
+
+SELECT * FROM pracownicy WHERE imie LIKE 'J%';
+
+SELECT * FROM pracownicy WHERE nazwisko LIKE '%_n_%' AND imie LIKE '%_a';
+
+SELECT imie, nazwisko FROM pracownicy INNER JOIN wynagrodzenie ON (wynagrodzenie.id_pracownika = pracownicy.id_pracownika) INNER JOIN godziny ON (wynagrodzenie.id_godziny = godziny.id_godziny)  WHERE godziny.liczba_godzin > 160;
+
+SELECT imie, nazwisko FROM pracownicy INNER JOIN wynagrodzenie ON (wynagrodzenie.id_pracownika = pracownicy.id_pracownika) INNER JOIN pensja_stanowisko ON (wynagrodzenie.id_pensji = pensja_stanowisko.id_pensji) WHERE  pensja_stanowisko.kwota > 1500 AND pensja_stanowisko.kwota < 3000;
+
+SELECT imie, nazwisko FROM pracownicy INNER JOIN wynagrodzenie ON (wynagrodzenie.id_pracownika = pracownicy.id_pracownika) INNER JOIN godziny ON (wynagrodzenie.id_godziny = godziny.id_godziny) WHERE godziny.liczba_godzin > 160 AND id_premii IN (SELECT id_premii FROM premia WHERE rodzaj = 'brak');
+7.
+SELECT imie, nazwisko FROM pracownicy INNER JOIN wynagrodzenie ON (wynagrodzenie.id_pracownika = pracownicy.id_pracownika)INNER JOIN pensja_stanowisko ON (wynagrodzenie.id_pensji = pensja_stanowisko.id_pensji) ORDER BY kwota;
+
+SELECT imie, nazwisko FROM pracownicy INNER JOIN wynagrodzenie ON (wynagrodzenie.id_pracownika = pracownicy.id_pracownika)INNER JOIN pensja_stanowisko ON (wynagrodzenie.id_pensji = pensja_stanowisko.id_pensji)INNER JOIN premia ON (wynagrodzenie.id_premii = premia.id_premii) ORDER BY pensja_stanowisko.kwota, premia.kwota DESC;
+
+SELECT COUNT(DISTINCT id_pracownika), pensja_stanowisko.stanowisko FROM wynagrodzenie INNER JOIN pensja_stanowisko ON (wynagrodzenie.id_pensji = pensja_stanowisko.id_pensji) GROUP BY pensja_stanowisko.stanowisko;
+
+SELECT AVG(kwota), MIN(kwota), MAX(kwota) FROM pensja_stanowisko WHERE stanowisko='Szef';
+
+SELECT SUM(premia.kwota+pensja_stanowisko.kwota) FROM wynagrodzenieINNER JOIN pensja_stanowisko ON (wynagrodzenie.id_pensji = pensja_stanowisko.id_pensji)INNER JOIN premia ON (wynagrodzenie.id_premii = premia.id_premii) ;
+
+SELECT SUM(premia.kwota+pensja_stanowisko.kwota), pensja_stanowisko.stanowisko FROM wynagrodzenieINNER JOIN pensja_stanowisko ON (wynagrodzenie.id_pensji = pensja_stanowisko.id_pensji)INNER JOIN premia ON (wynagrodzenie.id_premii = premia.id_premii) GROUP BY pensja_stanowisko.stanowisko;
+
+SELECT COUNT(wynagrodzenie.id_premii), pensja_stanowisko.stanowisko FROM wynagrodzenie INNER JOIN pensja_stanowisko ON (wynagrodzenie.id_pensji = pensja_stanowisko.id_pensji)INNER JOIN premia ON (wynagrodzenie.id_premii = premia.id_premii) WHERE premia.rodzaj != 'brak' GROUP BY pensja_stanowisko.stanowisko;
+
+DELETE FROM pracownicy WHERE id_pracownika IN(SELECT id_pracownika FROM wynagrodzenie INNER JOIN pensja_stanowisko ON (wynagrodzenie.id_pensji = pensja_stanowisko.id_pensji) WHERE pensja_stanowisko.kwota < 1200);
