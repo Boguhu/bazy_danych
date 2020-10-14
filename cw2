@@ -1,0 +1,255 @@
+-- Created by Vertabelo (http://vertabelo.com)
+-- Last modification date: 2020-10-14 18:40:02.221
+
+-- tables
+-- Table: godziny
+CREATE TABLE firma.godziny (
+    id_godziny int  NOT NULL,
+    data date  NOT NULL,
+    liczba_godzin int  NOT NULL,
+    id_pracownika int  NOT NULL,
+    CONSTRAINT pk_godziny PRIMARY KEY (id_godziny)
+);
+
+-- Table: pensja_stanowisko
+CREATE TABLE firma.pensja_stanowisko (
+    id_pensji int  NOT NULL,
+    stanowisko varchar  NOT NULL,
+    kwota numeric(10,2)  NOT NULL,
+    CONSTRAINT pensja_stanowisko_pk PRIMARY KEY (id_pensji)
+);
+
+-- Table: pracownicy
+CREATE TABLE firma.pracownicy (
+    id_pracownika int  NOT NULL,
+    imie varchar  NOT NULL,
+    nazwisko varchar  NOT NULL,
+    adres varchar  NOT NULL,
+    telefon varchar  NOT NULL,
+    CONSTRAINT pracownicy_pk PRIMARY KEY (id_pracownika)
+);
+
+-- Table: premia
+CREATE TABLE firma.premia (
+    id_premii int  NOT NULL,
+    rodzaj varchar  NOT NULL,
+    kwota numeric(10,2)  NOT NULL,
+    CONSTRAINT premia_pk PRIMARY KEY (id_premii)
+);
+
+-- Table: producenci
+CREATE TABLE sklep.producenci (
+    id_producenta int  NOT NULL,
+    nazwa_producenta varchar  NOT NULL,
+    mail varchar  NOT NULL,
+    telefon varchar  NOT NULL,
+    CONSTRAINT producenci_pk PRIMARY KEY (id_producenta)
+);
+
+-- Table: produkty
+CREATE TABLE sklep.produkty (
+    id_produktu int  NOT NULL,
+    nazwa_produktu varchar  NOT NULL,
+    cena int  NOT NULL,
+    id_producenta int  NOT NULL,
+    CONSTRAINT produkty_pk PRIMARY KEY (id_produktu)
+);
+
+-- Table: wynagrodzenie
+CREATE TABLE firma.wynagrodzenie (
+    id_wynagrodzenia int  NOT NULL,
+    data date  NOT NULL,
+    id_pracownika int  NOT NULL,
+    id_godziny int  NOT NULL,
+    id_pensji int  NOT NULL,
+    id_premii int  NOT NULL,
+    CONSTRAINT wynagrodzenie_pk PRIMARY KEY (id_wynagrodzenia)
+);
+
+-- Table: zamowienia
+CREATE TABLE sklep.zamowienia (
+    id_zamowienia int  NOT NULL,
+    ilosc int  NOT NULL,
+    data date  NOT NULL,
+    id_produktu int  NOT NULL,
+    CONSTRAINT zamowienia_pk PRIMARY KEY (id_zamowienia)
+);
+
+-- foreign keys
+-- Reference: godziny_pracownicy (table: godziny)
+ALTER TABLE firma.godziny ADD CONSTRAINT godziny_pracownicy
+    FOREIGN KEY (id_pracownika)
+    REFERENCES firma.pracownicy (id_pracownika)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: produkty_producenci (table: produkty)
+ALTER TABLE sklep.produkty ADD CONSTRAINT produkty_producenci
+    FOREIGN KEY (id_producenta)
+    REFERENCES sklep.producenci (id_producenta)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: wynagrodzenie_pensja_stanowisko (table: wynagrodzenie)
+ALTER TABLE firma.wynagrodzenie ADD CONSTRAINT wynagrodzenie_pensja_stanowisko
+    FOREIGN KEY (id_pensji)
+    REFERENCES firma.pensja_stanowisko (id_pensji)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: wynagrodzenie_pracownicy (table: wynagrodzenie)
+ALTER TABLE firma.wynagrodzenie ADD CONSTRAINT wynagrodzenie_pracownicy
+    FOREIGN KEY (id_pracownika)
+    REFERENCES firma.pracownicy (id_pracownika)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: wynagrodzenie_premia (table: wynagrodzenie)
+ALTER TABLE firma.wynagrodzenie ADD CONSTRAINT wynagrodzenie_premia
+    FOREIGN KEY (id_premii)
+    REFERENCES firma.premia (id_premii)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: zamowienia_produkty (table: zamowienia)
+ALTER TABLE sklep.zamowienia ADD CONSTRAINT zamowienia_produkty
+    FOREIGN KEY (id_produktu)
+    REFERENCES sklep.produkty (id_produktu)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- End of file.
+
+6.
+INSERT INTO sklep.producenci(id_producenta,nazwa_producenta,mail,telefon) VALUES(1,'p1','a@gmail.com','111-111-111');
+INSERT INTO sklep.producenci(id_producenta,nazwa_producenta,mail,telefon) VALUES(2,'p2','b@gmail.com','222-222-222');
+INSERT INTO sklep.producenci(id_producenta,nazwa_producenta,mail,telefon) VALUES(3,'p3','c@gmail.com','333-333-333');
+INSERT INTO sklep.producenci(id_producenta,nazwa_producenta,mail,telefon) VALUES(4,'p4','d@gmail.com','444-444-444');
+INSERT INTO sklep.producenci(id_producenta,nazwa_producenta,mail,telefon) VALUES(5,'p5','f@gmail.com','555-555-555');
+INSERT INTO sklep.producenci(id_producenta,nazwa_producenta,mail,telefon) VALUES(6,'p6','g@gmail.com','666-666-666');
+INSERT INTO sklep.producenci(id_producenta,nazwa_producenta,mail,telefon) VALUES(7,'p7','h@gmail.com','777-777-777');
+INSERT INTO sklep.producenci(id_producenta,nazwa_producenta,mail,telefon) VALUES(8,'p8','i@gmail.com','888-888-888');
+INSERT INTO sklep.producenci(id_producenta,nazwa_producenta,mail,telefon) VALUES(9,'p9','j@gmail.com','999-999-999');
+INSERT INTO sklep.producenci(id_producenta,nazwa_producenta,mail,telefon) VALUES(10,'p10','k@gmail.com','123-123-123');
+
+
+INSERT INTO sklep.produkty(id_produktu,nazwa_produktu,cena,id_producenta) VALUES(1,'p1',10);
+INSERT INTO sklep.produkty(id_produktu,nazwa_produktu,cena,id_producenta) VALUES(2,'p2',20);
+INSERT INTO sklep.produkty(id_produktu,nazwa_produktu,cena,id_producenta) VALUES(3,'p3',30);
+INSERT INTO sklep.produkty(id_produktu,nazwa_produktu,cena,id_producenta) VALUES(4,'p4',40);
+INSERT INTO sklep.produkty(id_produktu,nazwa_produktu,cena,id_producenta) VALUES(5,'p5',50);
+INSERT INTO sklep.produkty(id_produktu,nazwa_produktu,cena,id_producenta) VALUES(6,'p6',60);
+INSERT INTO sklep.produkty(id_produktu,nazwa_produktu,cena,id_producenta) VALUES(7,'p7',70);
+INSERT INTO sklep.produkty(id_produktu,nazwa_produktu,cena,id_producenta) VALUES(8,'p8',80);
+INSERT INTO sklep.produkty(id_produktu,nazwa_produktu,cena,id_producenta) VALUES(9,'p9',90);
+INSERT INTO sklep.produkty(id_produktu,nazwa_produktu,cena,id_producenta) VALUES(10,'p10',11111111111);
+
+
+INSERT INTO sklep.zamowienia(id_zamowienia,ilosc,data,produkty_id_produktu) VALUES(1,1,'2020-01-01',1);
+INSERT INTO sklep.zamowienia(id_zamowienia,ilosc,data,produkty_id_produktu) VALUES(2,2,'2020-01-02',2);
+INSERT INTO sklep.zamowienia(id_zamowienia,ilosc,data,produkty_id_produktu) VALUES(3,3,'2020-01-03',3);
+INSERT INTO sklep.zamowienia(id_zamowienia,ilosc,data,produkty_id_produktu) VALUES(4,4,'2020-01-04',4);
+INSERT INTO sklep.zamowienia(id_zamowienia,ilosc,data,produkty_id_produktu) VALUES(5,5,'2020-01-05',5);
+INSERT INTO sklep.zamowienia(id_zamowienia,ilosc,data,produkty_id_produktu) VALUES(6,6,'2020-01-06',6);
+INSERT INTO sklep.zamowienia(id_zamowienia,ilosc,data,produkty_id_produktu) VALUES(7,7,'2020-01-07',7);
+INSERT INTO sklep.zamowienia(id_zamowienia,ilosc,data,produkty_id_produktu) VALUES(8,8,'2020-01-08',8);
+INSERT INTO sklep.zamowienia(id_zamowienia,ilosc,data,produkty_id_produktu) VALUES(9,9,'2020-01-09',9);
+INSERT INTO sklep.zamowienia(id_zamowienia,ilosc,data,produkty_id_produktu) VALUES(10,10,'2020-01-10',10);
+
+7,8,9,10 Wykonano przy użyciu pgAdmin (DROP DATABASE s290908);
+
+11.
+SELECT CONCAT('Producent: ', nazwa_producenta, ', liczba zamowien: ', SUM(ilosc), ', wartosc zamowienia: ', SUM(ilosc*cena)) FROM sklep.zamowienia INNER JOIN sklep.produkty ON sklep.produkty.id_produktu = sklep.zamowienia.id_produktu INNER JOIN sklep.producenci ON sklep.producenci.id_producenta = sklep.produkty.id_producenta GROUP BY sklep.producenci.id_producenta;
+
+SELECT CONCAT('Produkt: ', nazwa_produktu, ', liczba zamowien: ', COUNT(id_zamowienia)) FROM sklep.produkty INNER JOIN sklep.zamowienia ON sklep.produkty.id_produktu = sklep.zamowienia.id_produktu GROUP BY sklep.produkty.nazwa_produktu;
+
+SELECT * FROM sklep.produkty NATURAL JOIN sklep.zamowienia;
+
+SELECT * FROM sklep.zamowienia WHERE DATE_PART('month', data) = 1;
+
+SELECT SUM(ilosc*cena) AS sprzedaz, DATE_PART('dow', data) AS dzien_tygodnia FROM sklep.zamowienia INNER JOIN sklep.produkty ON sklep.zamowienia.id_produktu = sklep.produkty.id_produktu GROUP BY dzien_tygodnia ORDER BY sprzedaz DESC;
+
+SELECT nazwa_produktu, COUNT(id_zamowienia) AS ilosc_zamowien FROM sklep.zamowienia INNER JOIN sklep.produkty ON sklep.zamowienia.id_produktu = sklep.produkty.id_produktu GROUP BY nazwa_produktu ORDER BY ilosc_zamowien DESC;
+
+12.
+SELECT CONCAT('Produkt ',UPPER(nazwa_produktu), ' którego producentem jest ', LOWER(nazwa_producenta), ', zamówiono ', COUNT(id_zamowienia), ' razy') AS opis FROM sklep.zamowienia INNER JOIN sklep.produkty ON sklep.zamowienia.id_produktu = sklep.produkty.id_produktu INNER JOIN producenci ON sklep.produkty.id_producenta = sklep.producenci.id_producenta GROUP BY sklep.produkty.nazwa_produktu,sklep.producenci.nazwa_producenta;
+
+SELECT * FROM sklep.zamowienia INNER JOIN sklep.produkty ON sklep.zamowienia.id_produktu = sklep.produkty.id_produktu WHERE (cena*liczba_sztuk) NOT IN (SELECT cena*liczba_sztuk FROM sklep.zamowienia INNER JOIN sklep.produkty ON sklep.zamowienia.id_produktu = sklep.produkty.id_produktu ORDER BY cena*liczba_sztuk DESC LIMIT 3);
+
+CREATE TABLE klienci (id_klienta SERIAL PRIMARY KEY, mail VARCHAR(250) NOT NULL, telefon VARCHAR(250) NOT NULL);
+
+ALTER TABLE sklep.zamowienia ADD COLUMN id_klienta INT;
+ALTER TABLE sklep.zamowienia ADD CONSTRAINT klient_zamowienie_fk FOREIGN KEY (id_klienta) REFERENCES sklep.klienci(id_klienta);
+
+INSERT INTO sklep.klienci(id_klienta,email,telefon)
+VALUES(1,'aa@gmail.com','000-000-000'),
+(2,'bb@gmail.com','111-111-111'),
+(3,'cc@gmail.com','222-222-222'),
+(4,'dd@gmail.com','333-333-333'),
+(5,'ee@gmail.com','444-444-444'),
+(6,'ff@gmail.com','555-555-555');
+
+UPDATE sklep.zamowienia SET id_klient = floor(random() *5 +1 );
+
+SELECT klienci.id_klienta, produkty.nazwa_produktu, zamowienia.ilosc, produkty.cena*zamowienia.ilosc AS wartosc_zamowienia FROM sklep.zamowienia INNER JOIN sklep.produkty ON (zamowienia.id_produktu=produkty.id_produktu) INNER JOIN sklep.klienci ON (zamowienia.id_klienta=klienci.id_klienta); 
+
+SELECT CONCAT('NAJCZESCIEJ ZAMAWIAJACY: ', id_klienta, ', ilosc zamowien: ', COUNT(id_zamowienia), ', wartosc: ', SUM(ilosc*cena)) FROM sklep.zamowienia INNER JOIN klienci ON sklep.zamowienia.id_klienta = klienci.id_klienta INNER JOIN sklep.produkty ON sklep.zamowienia.id_produktu = sklep.produkty.id_produktu GROUP BY id_klienta ORDER BY COUNT(id_zamowienia) DESC LIMIT 1;
+
+SELECT CONCAT('NAJRZADZIEJ ZAMAWIAJACY: ', id_klienta, ', ilosc zamowien: ', COUNT(id_zamowienia), ', wartosc: ', SUM(ilosc*cena)) FROM sklep.zamowienia INNER JOIN klienci ON sklep.zamowienia.id_klienta = klienci.id_klienta INNER JOIN sklep.produkty ON sklep.zamowienia.id_produktu = sklep.produkty.id_produktu GROUP BY id_klienta ORDER BY COUNT(id_zamowienia) LIMIT 1;
+
+DELETE FROM sklep.produkty WHERE id_produktu IN (SELECT id_produktu FROM sklep.zamowienia RIGHT JOIN sklep.produkty ON sklep.zamowienia.id_produktu = sklep.produkty.id_produktu GROUP BY sklep.zamowienia.id_produktu HAVING COUNT(id_zamowienia) = 0);
+
+13.
+CREATE TABLE numer (liczba INT CHECK(liczba BETWEEN 0 AND 9999));
+
+CREATE SEQUENCE liczba_seq INCREMENT 5 MINVALUE 100 MAXVALUE 125 CYCLE;
+
+DO
+$do$
+BEGIN 
+   FOR i IN 1..7 LOOP
+      INSERT INTO numer(liczba) VALUES (nextval('liczba_seq'));                    
+   END LOOP;
+END
+$do$;
+
+ALTER SEQUENCE liczba_seq INCREMENT BY 6;
+
+SELECT last_value FROM liczba_seq;
+SELECT last_value+increment_by FROM liczba_seq;
+
+DROP SEQUENCE liczba_seq;
+
+14.
+
+CREATE USER Superuser290908 WITH SUPERUSER;
+CREATE USER guest290908;
+GRANT SELECT ON ALL TABLES IN SCHEMA firma TO guest290908;
+SELECT * FROM pg_catalog.pg_user;
+
+ALTER USER Superuser290908 RENAME TO student;
+ALTER USER student WITH NOSUPERUSER;
+GRANT SELECT ON ALL TABLES IN SCHEMA firma TO student;
+
+DROP USER guest290908;
+
+15.
+
+BEGIN;
+UPDATE sklep.produkty SET cena=cena+10;
+COMMIT;
+
+CREATE OR REPLACE FUNCTION funkcja_udzial()
+RETURNS TABLE (procent text) AS
+$func$
+BEGIN
+	RETURN QUERY
+	SELECT CONCAT(nazwa_producenta, ': ', (COUNT(id_zamowienia) / CAST((SELECT COUNT(*) FROM sklep.zamowienia) AS FLOAT))*100, '%') FROM sklep.producenci JOIN sklep.produkty ON sklep.producenci.id_producenta = sklep.produkty.id_producenta JOIN sklep.zamowienia ON sklep.zamowienia.id_produktu = sklep.produkty.id_produktu GROUP BY (id_producenta);
+END
+$func$ LANGUAGE plpgsql;
