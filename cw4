@@ -1,12 +1,14 @@
 zad4)
 
-SELECT COUNT(DISTINCT gid), f_codedesc, geom INTO tableb FROM popp INNER JOIN 
-(SELECT ST_Buffer( geom, 100000, 'endcap=square join=mitre') AS b FROM rivers ) AS buf
-ON ( ST_IsEmpty(ST_Intersection(popp.geom, buf.b)) = false ) WHERE popp.f_codedesc='Building';
+SELECT COUNT(DISTINCT gid), f_codedesc, geom INTO tableb FROM popp 
+INNER JOIN (SELECT ST_Buffer( geom, 100000, 'endcap=square join=mitre') AS b FROM rivers ) 
+AS buf ON ( ST_IsEmpty(ST_Intersection(popp.geom, buf.b)) = false ) 
+WHERE popp.f_codedesc='Building';
 
-SELECT DISTINCT(gid), f_codedesc, geom INTO tableb FROM popp INNER JOIN 
-(SELECT ST_Buffer( geom, 100000, 'endcap=square join=mitre') AS b FROM rivers ) AS buf
-ON ( ST_IsEmpty(ST_Intersection(popp.geom, buf.b)) = false ) WHERE popp.f_codedesc='Building';
+SELECT DISTINCT(gid), f_codedesc, geom INTO tableb FROM popp 
+INNER JOIN (SELECT ST_Buffer( geom, 100000, 'endcap=square join=mitre') AS b FROM rivers ) 
+AS buf ON ( ST_IsEmpty(ST_Intersection(popp.geom, buf.b)) = false ) 
+WHERE popp.f_codedesc='Building';
 
 SELECT ST_ASTEXT(ST_Buffer( geom, 10000, 'endcap=square join=mitre')) FROM rivers;
 
@@ -16,7 +18,9 @@ SELECT name, elev, geom INTO airportsNew FROM airports;
 
 zad6)
 a)
-SELECT name, ST_ASTEXT(geom) FROM airportsNew ORDER BY ST_Y(geom);
+SELECT name, ST_ASTEXT(geom) 
+FROM airportsNew 
+ORDER BY ST_Y(geom);
 
 SELECT 'zachod', name FROM airportsNew WHERE ST_Y(geom) =(SELECT min(ST_Y(geom)) FROM airportsNew)
 UNION
@@ -24,10 +28,12 @@ SELECT 'wschod', name FROM airportsNew WHERE ST_Y(geom)=(SELECT max(ST_Y(geom)) 
 
 b)
 SELECT ST_AREA((ST_BUFFER(ST_ShortestLine(lake.geom, airport.geom), 1000,  'endcap=square join=mitre')))
- FROM lakes lake, airports airport WHERE lake.names='Iliamna Lake' AND airport.name='AMBLER';
+ FROM lakes lake, airports airport 
+ WHERE lake.names='Iliamna Lake' 
+ AND airport.name='AMBLER';
  
 zad7)
-SELECT SUM(fore
-st.area_km2) FROM trees forest INNER JOIN 
-(SELECT geom FROM tundra UNION SELECT geom FROM swamp) AS area
-ON ST_IsEmpty(ST_Intersection(area.geom, ST_MAKEVALID(forest.geom)))=false;
+
+SELECT SUM(forest.area_km2) FROM trees forest 
+INNER JOIN (SELECT geom FROM tundra UNION SELECT geom FROM swamp) 
+AS area ON ST_IsEmpty(ST_Intersection(area.geom, ST_MAKEVALID(forest.geom)))=false;
